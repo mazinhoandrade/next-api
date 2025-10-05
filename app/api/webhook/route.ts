@@ -1,6 +1,6 @@
 // app/api/webhook/route.ts
+import { updateStatus } from "@/app/actions/update-order";
 import mpClient, { verifyMercadoPagoSignature } from "@/app/lib/mercado-pago";
-import { prisma } from "@/app/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -22,27 +22,18 @@ export async function POST(req: NextRequest) {
           paymentData.date_approved !== null // Pagamento por Pix
         ) {
            // Atualizar status no banco
-          await prisma.order.update({
-          where: { paymentId: data.id },
-          data: { status: "approved" },
-          });
+          await updateStatus(data.id.toString(), "approved");
+        } else if (
+          paymentData.status === "cancelled" ||
+          paymentData.status === "expired"
+        ) {
+          // Pagamento cancelado ou expirado
+          await updateStatus(data.id.toString(), "cancelled");
+        } 
+        break;
+          default:
+            console.log("Unhandled event type:", type);
         }
-        break;
-        case "cancelled":
-        case "expired":
-        // Atualizar status no banco
-        await prisma.order.update({
-        where: { paymentId: data.id.toString() },
-        data: { status: "cancelled" },
-        });
-        break;
-      //case "subscription_preapproval": Eventos de assinatura
-      //console.log("Subscription preapproval event");
-      //console.log(data);
-      //break;
-      default:
-        console.log("Unhandled event type:", type);
-     }
 
   return NextResponse.json({ status: "ok" });
   } catch (error) {

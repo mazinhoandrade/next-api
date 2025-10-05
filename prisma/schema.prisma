@@ -7,15 +7,24 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Product {
+  id          String    @id @default(cuid())
+  amount      Int
+  payerEmail  String?
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime?
+}
+
 model Order {
-  id             String   @id @default(cuid())
-  paymentId      String   @unique
-  amount         Float
-  description    String
-  status         String
-  qrCode         String?
-  qrCodeBase64   String?
-  paymentUrl     String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime?
+  id           String    @id @default(cuid())
+  paymentId    String    @unique
+  amount       Float
+  description  String
+  status       String
+  qrCode       String?
+  qrCodeBase64 String?
+  paymentUrl   String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime?
 }
