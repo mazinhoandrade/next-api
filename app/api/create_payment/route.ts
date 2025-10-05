@@ -1,68 +1,78 @@
+// app/api/create_order/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import MercadoPago from "mercadopago";
-
-// Prisma
-const prisma = new PrismaClient();
-
-// Mercado Pago client (SDK moderno 2.x)
-const mpClient = new MercadoPago({ accessToken: process.env.MP_ACCESS_TOKEN! });
 
 
-interface MercadoPagoPayment {
-  id: number | string;
-  status: string;
-  point_of_interaction?: {
-    transaction_data?: {
-      qr_code: string;
-      qr_code_base64: string;
-      ticket_url: string;
-    };
-  };
+import crypto from "crypto";
+import { prisma } from "@/app/lib/prisma";
+
+interface CreateOrderBody {
+  amount: string;
+  payerEmail?: string;
 }
+
+interface Order {
+    amount: number;
+    status: string;
+    id: string;
+    paymentId: string;
+    description?: string;
+    qrCode: string | null;
+    qrCodeBase64: string | null;
+    paymentUrl: string | null;
+    createdAt?: Date;
+    updatedAt?: Date | null;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { amount, description } = body as {
-      amount: number;
-      description?: string;
-    };
+    const { amount, payerEmail } = await req.json() as CreateOrderBody;
 
-    if (!amount) {
-      return NextResponse.json({ error: "amount é obrigatório" }, { status: 400 });
+    const external_reference = `pedido_${crypto.randomUUID()}`;
+    if (!amount || !external_reference || !payerEmail) {
+      return NextResponse.json({ error: "Campos obrigatórios ausentes" }, { status: 400 });
     }
 
-    // Criar pagamento PIX via Payments API
-const payment = await (mpClient as unknown as { payment: { create: (arg0: { transaction_amount: number; payment_method_id: string; payer: { email: string; }; description: string; }) => Promise<MercadoPagoPayment> } })
-  .payment.create({
-    transaction_amount: amount,
+    const idempotencyKey = crypto.randomUUID();
+
+ const response = await fetch("https://api.mercadopago.com/v1/payments", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+    "X-Idempotency-Key": idempotencyKey,
+  },
+  body: JSON.stringify({
+    transaction_amount: parseFloat(amount),
+    description: "Teste PIX",
     payment_method_id: "pix",
-    payer: { email: "payer@example.com" },
-    description: "Pagamento via PIX",
-  });
+    payer: { email: payerEmail || "KX9G7@example.com" },
+    external_reference: external_reference,
+  }),
+});
 
-    // Extrair dados PIX
-    const point = payment.point_of_interaction?.transaction_data;
-    if (!point) {
-      return NextResponse.json({ error: "Erro ao gerar QR Code PIX" }, { status: 500 });
-    }
+const orderData = await response.json();
 
-    // Salvar pedido no Neon/PostgreSQL via Prisma
-    const order = await prisma.order.create({
-      data: {
-        paymentId: String(payment.id),
-        amount,
-        description: description || "Pagamento via PIX",
-        status: payment.status,
-        qrCode: point.qr_code,
-        qrCodeBase64: point.qr_code_base64,
-        paymentUrl: point.ticket_url,
-      },
-    });
+if (!response.ok) {
+  console.error("Erro Mercado Pago:", orderData);
+  return NextResponse.json({ error: "Erro na criação do pagamento", detail: orderData }, { status: 500 });
+}
 
-    return NextResponse.json(order);
+// Salvar no banco
+const order = await prisma.order.create({
+  data: {
+    paymentId: orderData.id.toString(),
+    amount: parseFloat(amount),
+    description: "Pedido PIX",
+    status: orderData.status,
+    paymentUrl: orderData.point_of_interaction?.transaction_data?.ticket_url,
+    qrCode: orderData.point_of_interaction?.transaction_data?.qr_code,
+    qrCodeBase64: orderData.point_of_interaction?.transaction_data?.qr_code_base64,
+  },
+}) as Order;
+
+return NextResponse.json(order);
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Erro interno"}, { status: 500 });
+    return NextResponse.json({ error: "Erro interno" }, { status: 500 });
   }
 }
