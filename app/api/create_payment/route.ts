@@ -43,10 +43,11 @@ export async function POST(req: NextRequest) {
   },
   body: JSON.stringify({
     transaction_amount: parseFloat(amount),
-    description: "Teste PIX",
+    description: "Maquina de Baton",
     payment_method_id: "pix",
     payer: { email: payerEmail || "KX9G7@example.com" },
     external_reference: external_reference,
+    date_of_expiration: new Date(Date.now() + 2 * 60 * 1000).toISOString(), // Expira em 2 minutos
   }),
 });
 

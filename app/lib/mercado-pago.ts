@@ -1,13 +1,19 @@
 import crypto from "crypto";
-import { MercadoPagoConfig } from "mercadopago";
+import { MercadoPagoConfig, Payment } from "mercadopago";
 import { NextResponse } from "next/server";
 
 // Instância do cliente Mercado Pago
 const mpClient = new MercadoPagoConfig({
-  accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN as string,
+  accessToken: process.env.MP_ACCESS_TOKEN as string,
 });
 
-export default mpClient;
+// Adiciona manualmente o módulo Payment ao cliente
+export const mp = {
+  client: mpClient,
+  payment: new Payment(mpClient),
+};
+
+export default mp;
 
 // Função auxiliar para verificar a assinatura do Mercado Pago - Protege sua rota de acessos maliciosos
 // Disponível na própria documentação do Mercado Pago
