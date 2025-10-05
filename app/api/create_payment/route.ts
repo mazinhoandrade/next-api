@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import crypto from "crypto";
 import { prisma } from "@/app/lib/prisma";
-import { CreateOrderBody, Order } from "@/app/types/order";
+import { Order } from "@/app/types/order";
 
 import { getProductId } from "@/app/actions/get-product";
 
