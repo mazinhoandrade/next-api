@@ -28,6 +28,14 @@ export async function POST(req: NextRequest) {
           });
         }
         break;
+        case "cancelled":
+        case "expired":
+        // Atualizar status no banco
+        await prisma.order.update({
+        where: { paymentId: data.id.toString() },
+        data: { status: "cancelled" },
+        });
+        break;
       //case "subscription_preapproval": Eventos de assinatura
       //console.log("Subscription preapproval event");
       //console.log(data);

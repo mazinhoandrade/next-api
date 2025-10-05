@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     const idempotencyKey = crypto.randomUUID();
-
+ const expiration = new Date(Date.now() + 3 * 60 * 1000).toISOString(); // ⏱️ expira em 3 minutos
  const response = await fetch("https://api.mercadopago.com/v1/payments", {
   method: "POST",
   headers: {
@@ -47,12 +47,12 @@ export async function POST(req: NextRequest) {
     payment_method_id: "pix",
     payer: { email: payerEmail || "KX9G7@example.com" },
     external_reference: external_reference,
-    date_of_expiration: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // ⏱️ expira em 5 minutos
+    date_of_expiration: expiration,
   }),
 });
 
 const orderData = await response.json();
-
+console.log(orderData);
 if (!response.ok) {
   console.error("Erro Mercado Pago:", orderData);
   return NextResponse.json({ error: "Erro na criação do pagamento", detail: orderData }, { status: 500 });
