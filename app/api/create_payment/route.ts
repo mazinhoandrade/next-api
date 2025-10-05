@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     payment_method_id: "pix",
     payer: { email: payerEmail || "KX9G7@example.com" },
     external_reference: external_reference,
-    //date_of_expiration: new Date(Date.now() + 3 * 60 * 1000).toISOString(), // ⏱️ expira em 3 minutos
+    date_of_expiration: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // ⏱️ expira em 5 minutos
   }),
 });
 
