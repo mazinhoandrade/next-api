@@ -7,12 +7,14 @@ interface Params {
   paymentId: string;
 }
 
-export async function GET(req: Request, context: { params: Params }) {
-  const { params } = context;
-  const { paymentId } = params;
+export async function GET(req: Request, context: { params: Promise<{ paymentId: string }> }) {
+  // ⚠️ await antes de usar
+  const params = await context.params;
+  const paymentId = String(params.paymentId);
 
   const order = await prisma.order.findUnique({
     where: { paymentId },
+    select: { id: true, status: true, paymentId: true},
   });
 
   if (!order) {
