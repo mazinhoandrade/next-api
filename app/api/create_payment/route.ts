@@ -8,13 +8,24 @@ const prisma = new PrismaClient();
 // Mercado Pago client (SDK moderno 2.x)
 const mpClient = new MercadoPago({ accessToken: process.env.MP_ACCESS_TOKEN! });
 
+
+interface MercadoPagoPayment {
+  id: number | string;
+  status: string;
+  point_of_interaction?: {
+    transaction_data?: {
+      qr_code: string;
+      qr_code_base64: string;
+      ticket_url: string;
+    };
+  };
+}
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { amount, description, payerEmail } = body as {
+    const { amount, description } = body as {
       amount: number;
       description?: string;
-      payerEmail?: string;
     };
 
     if (!amount) {
@@ -22,12 +33,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Criar pagamento PIX via Payments API
-const payment = await (mpClient as any).payment.create({
-  transaction_amount: amount,
-  payment_method_id: "pix",
-  payer: { email: "payer@example.com" },
-  description: "Pagamento via PIX",
-});
+const payment = await (mpClient as unknown as { payment: { create: (arg0: { transaction_amount: number; payment_method_id: string; payer: { email: string; }; description: string; }) => Promise<MercadoPagoPayment> } })
+  .payment.create({
+    transaction_amount: amount,
+    payment_method_id: "pix",
+    payer: { email: "payer@example.com" },
+    description: "Pagamento via PIX",
+  });
 
     // Extrair dados PIX
     const point = payment.point_of_interaction?.transaction_data;
