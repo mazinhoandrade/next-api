@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   // Atualizar status no banco
   await prisma.order.update({
     where: { paymentId },
-    data: { status: body.data.status },
+    data: { status: "approved" },
   });
 
   return NextResponse.json({ status: "ok" });
