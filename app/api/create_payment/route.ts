@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         transaction_amount: amount,
-        description: description || "Pedido PIX",
+        description: description,
         payment_method_id: "pix",
         payer: { email: payerEmail || "mazinhodev@example.com" },
         external_reference: external_reference,

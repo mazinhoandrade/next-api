@@ -28,7 +28,9 @@ export default function RootLayout({
     <Link href="/product">
     <MenubarTrigger>Produtos</MenubarTrigger>
     </Link>
-    <MenubarTrigger>Conf</MenubarTrigger>
+    <Link href="/order">
+    <MenubarTrigger>Pedidos</MenubarTrigger>
+    </Link>
   </MenubarMenu>
 </Menubar>
         {children}
