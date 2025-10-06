@@ -3,10 +3,6 @@
 import { prisma } from "@/app/lib/prisma";
 import { NextResponse } from "next/server";
 
-interface Params {
-  paymentId: string;
-}
-
 export async function GET(req: Request, context: { params: Promise<{ paymentId: string }> }) {
   // ⚠️ await antes de usar
   const params = await context.params;
