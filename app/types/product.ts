@@ -1,8 +1,8 @@
 export interface createProductType {
-  id?: string;
+  id: string;
   amount: number;
-  description?: string;
-  payerEmail?: string;
-  createdAt?: Date;
+  description: string|null;
+  payerEmail: string|null;
+  createdAt: Date;
   updatedAt?: Date | null;
 }

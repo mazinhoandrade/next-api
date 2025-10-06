@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input'
 import { NumericFormat } from "react-number-format";
 import { createProduct } from '@/app/actions/create-product';
 import { useAction } from "next-safe-action/hooks";
-import { formatCentsToBRL } from '@/app/helpers/money'
  
 const formSchema = z.object({
   amount: z.number({ message: "Campo obrigatório" }),
