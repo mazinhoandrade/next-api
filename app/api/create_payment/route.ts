@@ -6,26 +6,26 @@ import crypto from "crypto";
 import { prisma } from "@/app/lib/prisma";
 import { Order } from "@/app/types/order";
 
-import { getProductId } from "@/app/actions/get-product";
+import { getProductId, getProducts } from "@/app/actions/get-product";
 
 
 export async function POST(req: NextRequest) {
   try {
     //const { amount, payerEmail, description } = await req.json() as CreateOrderBody;
-    const product = await getProductId("cmge85kuv0001uvok0nbufs2y");
-    if (!product?.amount) {
+    const product = await getProducts();
+    if (!product[0].amount) {
       return NextResponse.json({ error: "Produto nao encontrado" }, { status: 404 });
     }
-    const amount = product.amount/100;
-    const description = product.description;
-    const payerEmail = product.payerEmail;
+    const amount = product[0].amount/100;
+    const description = product[0].description;
+    const payerEmail = product[0].payerEmail;
     const external_reference = `pedido_${crypto.randomUUID()}`;
-    if (!product?.amount || !external_reference) {
+    if (!amount || !external_reference) {
       return NextResponse.json({ error: "Campos obrigatórios ausentes" }, { status: 400 });
     }
 
     const idempotencyKey = crypto.randomUUID();
-    const expiration = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // ⏱️ expira em 3 minutos
+    const expiration = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // ⏱️ expira em 10 minutos
     const response = await fetch("https://api.mercadopago.com/v1/payments", {
       method: "POST",
       headers: {

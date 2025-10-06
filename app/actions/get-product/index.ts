@@ -5,5 +5,7 @@ export const getProductId = async (id: string) => {
 }
 
 export const getProducts = async () => {
-    return await prisma.product.findMany();
+    return await prisma.product.findMany({
+        orderBy: { createdAt: "desc" },
+    });
 }
