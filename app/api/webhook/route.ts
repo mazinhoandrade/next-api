@@ -22,20 +22,20 @@ export async function POST(req: NextRequest) {
           paymentData.date_approved !== null // Pagamento por Pix
         ) {
            // Atualizar status no banco
-          await updateStatus(data.id.toString(), "approved");
+          await updateStatus(data.id.toString(), "APPROVED");
         } else if (
           paymentData.status === "cancelled" ||
           paymentData.status === "expired"
         ) {
           // Pagamento cancelado ou expirado
-          await updateStatus(data.id.toString(), "cancelled");
+          await updateStatus(data.id.toString(), "CANCELLED");
         } 
         break;
           default:
             console.log("Unhandled event type:", type);
         }
 
-  return NextResponse.json({ status: "ok" });
+  return NextResponse.json({ status: true });
   } catch (error) {
     console.error("Error handling webhook:", error);
     return NextResponse.json(

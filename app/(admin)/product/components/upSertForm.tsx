@@ -3,12 +3,9 @@ import React, { useEffect } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import {
-  Dialog,
   DialogContent,
-
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import z from 'zod'
 import { Button } from '@/components/ui/button'
@@ -24,7 +21,6 @@ import { useAction } from 'next-safe-action/hooks'
 const formSchema = z.object({
   amount: z.number({ message: "Campo obrigatório" }),
   description: z.string().min(0).optional(),
-  payerEmail: z.string().optional(),
 })
 
 interface Props {
@@ -41,7 +37,6 @@ const UpSertForm = ({isOpen, onSuccess, product}: Props) => {
       defaultValues: {
         amount: product?.amount ? product.amount/100 : 0,
         description: product?.description ?? "",
-        payerEmail: product?.payerEmail ?? "",
       },
     });
 
@@ -50,7 +45,6 @@ const UpSertForm = ({isOpen, onSuccess, product}: Props) => {
       form.reset({
         amount: product?.amount ? product.amount/100 : 0,
         description: product?.description ?? "",
-        payerEmail: product?.payerEmail ?? "",
       });
     }
   }, [isOpen, form, product]);
@@ -60,7 +54,6 @@ const UpSertForm = ({isOpen, onSuccess, product}: Props) => {
           id: product?.id,
           amount: data.amount*100,
           description: data.description,
-          payerEmail: data.payerEmail
         });
         onSuccess?.();
         toast.success("Produto salvo com sucesso");
@@ -104,19 +97,6 @@ const UpSertForm = ({isOpen, onSuccess, product}: Props) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Descrição</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="payerEmail"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>

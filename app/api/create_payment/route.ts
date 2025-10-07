@@ -6,7 +6,7 @@ import crypto from "crypto";
 import { prisma } from "@/app/lib/prisma";
 import { Order } from "@/app/types/order";
 
-import { getProductId, getProducts } from "@/app/actions/get-product";
+import { getProducts } from "@/app/actions/get-product";
 
 
 export async function POST(req: NextRequest) {
@@ -14,12 +14,11 @@ export async function POST(req: NextRequest) {
     //const { amount, payerEmail, description } = await req.json() as CreateOrderBody;
     const product = await getProducts();
     if (!product[0].amount) {
-      return NextResponse.json({ error: "Produto nao encontrado" }, { status: 404 });
+      return NextResponse.json({ error: "order not found" }, { status: 404 });
     }
     const amount = product[0].amount/100;
     const description = product[0].description;
-    const payerEmail = product[0].payerEmail;
-    const external_reference = `pedido_${crypto.randomUUID()}`;
+    const external_reference = `order_${crypto.randomUUID()}`;
     if (!amount || !external_reference) {
       return NextResponse.json({ error: "Campos obrigatórios ausentes" }, { status: 400 });
     }
@@ -37,7 +36,7 @@ export async function POST(req: NextRequest) {
         transaction_amount: amount,
         description: description,
         payment_method_id: "pix",
-        payer: { email: payerEmail || "mazinhodev@example.com" },
+        payer: { email: "mazinhodev@example.com" },
         external_reference: external_reference,
         date_of_expiration: expiration,
       }),
@@ -47,14 +46,14 @@ export async function POST(req: NextRequest) {
 
     if (!response.ok) {
       console.error("Erro Mercado Pago:", orderData);
-      return NextResponse.json({ error: "Erro na criação do pagamento", detail: orderData }, { status: 500 });
+      return NextResponse.json({ error: "Error creating payment", detail: orderData }, { status: 500 });
     }
 
     // Salvar no banco
     const order = await prisma.order.create({
       data: {
         paymentId: orderData.id.toString(),
-        amount: amount,
+        amount: product[0].amount,
         description: orderData.description,
         status: orderData.status,
         paymentUrl: orderData.point_of_interaction?.transaction_data?.ticket_url,
@@ -66,6 +65,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(order);
   } catch (err) {
       console.error(err);
-      return NextResponse.json({ error: "Erro interno" }, { status: 500 });
+      return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

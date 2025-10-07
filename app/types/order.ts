@@ -1,6 +1,8 @@
+
+export type OrderStatus = "PENDING" | "APPROVED" | "CANCELLED";
 export interface Order {
     amount: number;
-    status: string;
+    status: OrderStatus;
     id: string;
     paymentId: string;
     description?: string;

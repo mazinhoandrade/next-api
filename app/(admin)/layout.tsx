@@ -2,24 +2,28 @@ import { Card } from "@/components/ui/card";
 
 import {
   Menubar,
-  MenubarContent,
-  MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar"
-import { Microchip } from "lucide-react";
-import Link from 'next/link'
 
-export default function RootLayout({
+import { getServerSession } from "next-auth/next";
+import Link from 'next/link'
+import { redirect } from "next/navigation";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import Header from "@/components/header";
+
+export default async function  RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return redirect("/authentication");
+    }
   return (
      <Card className='m-4 p-3 max-w-2xl md:mx-auto rounded-2xl '>
-      <div className="text-2xl flex justify-center items-center gap-2">ESP - PIX <Microchip /></div>
+      <Header />
     <Menubar>
   <MenubarMenu>
     <Link href="/dashboard">
