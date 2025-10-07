@@ -54,10 +54,8 @@ const SignIn = () => {
       email: values.email,
       password: values.password,
     });
-
     if (res?.error) {
       toast.error("Email ou senha incorretos");
-      alert(res.error);
     } else {
       toast.success("Login realizado com sucesso");
       router.push("/dashboard");

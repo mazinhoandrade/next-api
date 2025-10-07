@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 import { act } from "react";
 import z from "zod";
 
-
 export const deleteProduct = actionClient
     .inputSchema(z.object({ id: z.string() }))
     .action(async ({ parsedInput: { id } }) => {
