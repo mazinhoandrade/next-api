@@ -6,7 +6,8 @@ import SignIn from "./components/sign-in";
 import SignUp from "./components/sign-up";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../lib/auth";
+
 const Authentication = async () => {
   const session = await getServerSession(authOptions);
   if (session?.user) {

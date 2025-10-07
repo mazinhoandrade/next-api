@@ -9,8 +9,8 @@ import {
 import { getServerSession } from "next-auth/next";
 import Link from 'next/link'
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 import Header from "@/components/header";
+import { authOptions } from "../lib/auth";
 
 export default async function  RootLayout({
   children,
