@@ -1,3 +1,4 @@
+export const revalidate = 0;
 import { CardHeader, CardTitle } from '@/components/ui/card'
 import { ArrowLeftRight } from 'lucide-react'
 import React from 'react'
