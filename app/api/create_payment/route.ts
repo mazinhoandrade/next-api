@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       data: {
         paymentId: orderData.id.toString(),
         amount: amount,
-        description: "Pedido PIX",
+        description: orderData.description,
         status: orderData.status,
         paymentUrl: orderData.point_of_interaction?.transaction_data?.ticket_url,
         qrCode: orderData.point_of_interaction?.transaction_data?.qr_code,
