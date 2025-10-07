@@ -27,7 +27,7 @@ export default function RootLayout({
       >
         {children}
         <Toaster richColors position="bottom-right" />
-        <div className="flex w-full justify-center mt-4 text-sm py-3.5">@{new Date().getFullYear()} - ESP-32 PIX - Todos os direitos reservados - Desenvolvido por <a href="https://github.com/mazinhoandrade">MazinhoDev</a></div>
+        <div className="flex px-3 w-full text-center justify-center mt-4 text-sm py-3.5">@{new Date().getFullYear()} - ESP-32 PIX - Todos os direitos reservados</div>
       </body>
     </html>
   );

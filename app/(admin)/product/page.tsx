@@ -14,7 +14,7 @@ const page = async () => {
     
   return (
     <>
-      <CardHeader>
+      <CardHeader className='p-0'>
         <CardTitle className='flex items-center gap-2 text-xl'><LayoutList /> Produtos</CardTitle>
       </CardHeader>
         <Product products={products} />

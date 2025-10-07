@@ -7,7 +7,7 @@ import { getOrders } from '@/app/actions/get-orders'
 const Order = async () => {
   const orders = await getOrders();
   return (
-    <CardHeader>
+    <CardHeader className='p-0'>
         <CardTitle className='flex items-center gap-2 text-xl'><ArrowLeftRight /> Pedidos</CardTitle>
         <TableOrders orders={orders} />
     </CardHeader>
