@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
         paymentId: orderData.id.toString(),
         amount: product[0].amount,
         description: orderData.description,
-        status: orderData.status,
+        status: orderData.status === "approved" ? "APPROVED" : "PENDING",
         paymentUrl: orderData.point_of_interaction?.transaction_data?.ticket_url,
         qrCode: orderData.point_of_interaction?.transaction_data?.qr_code,
         qrCodeBase64: orderData.point_of_interaction?.transaction_data?.qr_code_base64,
