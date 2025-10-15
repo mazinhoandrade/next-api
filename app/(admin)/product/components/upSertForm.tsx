@@ -21,6 +21,7 @@ import { useAction } from 'next-safe-action/hooks'
 const formSchema = z.object({
   amount: z.number({ message: "Campo obrigatório" }),
   description: z.string().min(0).optional(),
+  quantity: z.number({ message: "Campo obrigatório" }).optional(),
 })
 
 interface Props {
@@ -37,6 +38,7 @@ const UpSertForm = ({isOpen, onSuccess, product}: Props) => {
       defaultValues: {
         amount: product?.amount ? product.amount/100 : 0,
         description: product?.description ?? "",
+        quantity: product?.quantity ?? 0
       },
     });
 
@@ -45,6 +47,7 @@ const UpSertForm = ({isOpen, onSuccess, product}: Props) => {
       form.reset({
         amount: product?.amount ? product.amount/100 : 0,
         description: product?.description ?? "",
+        quantity: product?.quantity ?? 0
       });
     }
   }, [isOpen, form, product]);
@@ -54,6 +57,7 @@ const UpSertForm = ({isOpen, onSuccess, product}: Props) => {
           id: product?.id,
           amount: data.amount*100,
           description: data.description,
+          quantity: data.quantity
         });
         onSuccess?.();
         toast.success("Produto salvo com sucesso");
@@ -104,6 +108,21 @@ const UpSertForm = ({isOpen, onSuccess, product}: Props) => {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="quantity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Quantidade</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
         <Button className='w-full capitalize text-foreground' type="submit" disabled={isPending}>{isPending ? "Salvando..." : "Salvar"}</Button>
       </form>
     </Form>

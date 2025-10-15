@@ -9,6 +9,7 @@ const inputSchema = z.object({
     id: z.string().optional(),
     amount: z.number({ message: "Campo obrigatório" }),
     description: z.string().min(0).optional(),
+    quantity: z.number({ message: "Campo obrigatório" }).optional(),
     payerEmail: z.string().optional(),
 });
 
@@ -23,11 +24,13 @@ export const createOrUpdateProduct = actionClient
       create: {
         amount,
         description,
+        quantity,
         payerEmail,
       },
       update: {
         amount,
         description,
+        quantity,
         payerEmail,
       },
     });
