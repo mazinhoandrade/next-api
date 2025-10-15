@@ -18,9 +18,9 @@ export const createOrUpdateProduct = actionClient
     handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
-  .action(async ({ parsedInput: { id, amount, description, payerEmail } }) => {
+  .action(async ({ parsedInput: { id, amount, description, quantity, payerEmail } }) => {
     const product = await prisma.product.upsert({
-      where: { id: id ?? "" }, // se id for null/undefined, evita erro
+      where: { id: id ?? "" },
       create: {
         amount,
         description,
