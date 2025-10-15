@@ -1,7 +1,7 @@
 export interface createProductType {
   id: string;
   amount: number;
-  quantity: number;
+  quantity: number | null;
   description: string|null;
   payerEmail: string|null;
   createdAt: Date;
