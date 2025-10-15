@@ -8,23 +8,23 @@ generator client {
 }
 
 model User {
-  id       String    @id @default(cuid())
-  name     String?
-  email    String    @unique
-  emailVerified  DateTime?
-  image          String?
-  password String
-  accounts Account[]
-  sessions Session[]
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String
+  accounts      Account[]
+  sessions      Session[]
 }
 
 model Account {
-  id                String  @id @default(cuid())
+  id                String @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Session {
@@ -38,6 +38,7 @@ model Session {
 model Product {
   id          String    @id @default(cuid())
   amount      Int
+  quantity    Int?
   payerEmail  String?
   description String?
   createdAt   DateTime  @default(now())
