@@ -29,7 +29,7 @@ const TableOrders = ({orders}:Props) => {
    {orders.map((order) => (
     <TableRow key={order.id}>
       <TableCell className="font-medium">{order.paymentId}</TableCell>
-      <TableCell>R$ {order.amount.toFixed(2)}</TableCell>
+      <TableCell>{formatCentsToBRL(order.amount)}</TableCell>
       <TableCell>{order.status}</TableCell>
       <TableCell className="text-right">{order.description}</TableCell>
     </TableRow>

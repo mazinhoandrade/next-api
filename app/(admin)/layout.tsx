@@ -24,7 +24,7 @@ export default async function  RootLayout({
   return (
      <Card className='m-4 p-3 max-w-2xl md:mx-auto rounded-2xl '>
       <Header />
-    <Menubar>
+    <Menubar className="bg-primary">
   <MenubarMenu>
     <Link href="/dashboard">
     <MenubarTrigger>Dashboard</MenubarTrigger>
